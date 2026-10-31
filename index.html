@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="CivicFix - Modern Municipal Issue Reporting, Public Transparency and Civic Engagement Platform.">
+  <title>CivicFix | Smart Public Issue Reporting & Community Governance</title>
+
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar" id="sidebar" aria-label="Main Navigation">
+    <div class="sidebar-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h2>CivicFix</h2>
+          <span class="brand-tagline">MUNICIPAL PORTAL</span>
+        </div>
+      </div>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="sidebar-scroll">
+      <div class="sidebar-section-label">WORKSPACE</div>
+      <nav class="navigation">
+        <button class="nav-item active" data-view="dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="7" height="9" x="3" y="3" rx="1"/>
+            <rect width="7" height="5" x="14" y="3" rx="1"/>
+            <rect width="7" height="9" x="14" y="12" rx="1"/>
+            <rect width="7" height="5" x="3" y="16" rx="1"/>
+          </svg>
+          <span>Overview</span>
+        </button>
+
+        <button class="nav-item" data-view="issues">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+          </svg>
+          <span>Explore Issues</span>
+          <span class="nav-counter" id="navIssueCounter">0</span>
+        </button>
+
+        <button class="nav-item" data-view="report">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 8v8M8 12h8"/>
+          </svg>
+          <span>Report an Issue</span>
+        </button>
+
+        <button class="nav-item" data-view="analytics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18"/>
+            <path d="m19 9-5 5-4-4-3 3"/>
+          </svg>
+          <span>Analytics</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-section-label">MANAGEMENT</div>
+      <nav class="navigation">
+        <button class="nav-item" data-view="admin">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <span>Admin Portal</span>
+          <span class="badge-pill" id="sidebarAdminBadge">Staff</span>
+        </button>
+      </nav>
+
+      <!-- CIVIC HEALTH HIGHLIGHT -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-top">
+          <span class="pulse-dot"></span>
+          <span>CITY RESOLUTION RATE</span>
+        </div>
+        <div class="sidebar-card-stat" id="sidebarResolutionRate">82%</div>
+        <p>Community reports verified and resolved within official SLA timelines.</p>
+        <div class="mini-bar">
+          <div class="mini-bar-fill" id="sidebarProgressFill" style="width: 82%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE FOOTER -->
+    <div class="sidebar-footer">
+      <!-- PROFILE DROPDOWN MENU (POPOVER) -->
+      <div class="profile-dropdown-menu" id="profileDropdownMenu" role="menu" aria-label="Account Options Menu">
+        <div class="pmenu-header">
+          <div class="avatar-ring" id="pmenuAvatarRing">
+            <div class="avatar" id="pmenuAvatar">CF</div>
+          </div>
+          <div class="pmenu-user-meta">
+            <div class="pmenu-name-row">
+              <strong id="pmenuUserName">Citizen Contributor</strong>
+              <span class="pmenu-badge" id="pmenuBadge">Resident</span>
+            </div>
+            <span class="pmenu-email" id="pmenuUserEmail">citizen@civicfix.local</span>
+          </div>
+        </div>
+
+        <div class="pmenu-stats" id="pmenuStats">
+          <!-- Rendered via JS -->
+        </div>
+
+        <div class="pmenu-divider"></div>
+
+        <div class="pmenu-items" id="pmenuItems">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <div class="profile-card" id="profileCard" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" title="Click to open account menu">
+        <div class="avatar-ring" id="sidebarAvatarRing">
+          <div class="avatar" id="sidebarAvatar">CF</div>
+        </div>
+        <div class="profile-info">
+          <strong id="sidebarUserName">Citizen Contributor</strong>
+          <span id="sidebarUserRole">Verified Resident</span>
+        </div>
+        <button class="profile-action-btn" title="Account Menu (3 dots)" id="profileBtn" aria-label="Account menu" aria-expanded="false">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="1.5"/>
+            <circle cx="12" cy="5" r="1.5"/>
+            <circle cx="12" cy="19" r="1.5"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- SIDEBAR BACKDROP FOR MOBILE -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- MAIN VIEW CONTAINER -->
+  <main class="main-content">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" id="menuToggle" aria-label="Open Navigation Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+        <div>
+          <div class="breadcrumb">
+            <span class="breadcrumb-root">CivicFix</span>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current" id="breadcrumb">Overview</span>
+          </div>
+          <h1 class="page-title" id="pageTitle">Community Overview</h1>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="network-badge">
+          <span class="live-dot"></span>
+          <span>MUNICIPAL LIVE SYNC</span>
+        </div>
+
+        <!-- NOTIFICATIONS DROPDOWN TRIGGER -->
+        <div class="notifications-wrapper">
+          <button class="topbar-icon-btn" id="notificationBtn" title="Civic Alerts & Updates" aria-label="Notifications">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="notification-badge" id="notifBadge">3</span>
+          </button>
+
+          <!-- NOTIFICATIONS PANEL -->
+          <div class="notifications-dropdown" id="notificationsDropdown">
+            <div class="notifications-header">
+              <h4>Civic Notifications</h4>
+              <button class="text-link-sm" id="markAllReadBtn">Clear all</button>
+            </div>
+            <div class="notifications-list" id="notificationsList">
+              <div class="notif-item unread">
+                <div class="notif-icon blue">⚡</div>
+                <div class="notif-content">
+                  <p><strong>Electric pole repaired</strong> on North Street.</p>
+                  <span>15 minutes ago</span>
+                </div>
+              </div>
+              <div class="notif-item unread">
+                <div class="notif-icon green">✓</div>
+                <div class="notif-content">
+                  <p><strong>Streetlight fix scheduled</strong> by Public Works.</p>
+                  <span>2 hours ago</span>
+                </div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon amber">📢</div>
+                <div class="notif-content">
+                  <p><strong>Road resurfacing</strong> underway near Central Junction.</p>
+                  <span>Yesterday</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-sm" id="topReportBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Report Issue</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="page-container">
+
+      <!-- ============================================== -->
+      <!-- VIEW: DASHBOARD (OVERVIEW)                     -->
+      <!-- ============================================== -->
+      <section class="view active" id="dashboard" role="region" aria-labelledby="pageTitle">
+
+        <!-- WELCOME HERO BANNER -->
+        <div class="welcome-banner">
+          <div class="welcome-content">
+            <div class="welcome-eyebrow">
+              <span class="badge-outline">CIVIC EMPOWERMENT</span>
+              <span class="hero-live-tag">● Local Council Active</span>
+            </div>
+            <h2>Report civic issues. Track resolution. Transform your neighborhood.</h2>
+            <p>Directly connect with local authorities to fix potholes, broken streetlights, water supply delays, and sanitation concerns in your neighborhood.</p>
+            <div class="welcome-actions">
+              <button class="btn btn-light" data-go="report">
+                <span>File a Public Report</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+              <button class="btn btn-glass" data-go="issues">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <span>Browse Local Issues</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="welcome-visual">
+            <div class="visual-graphic">
+              <div class="graphic-core">
+                <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="city-svg">
+                  <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+                  <path d="M6 12H4a2 2 0 0 0-2 2v8h4"/>
+                  <path d="M18 9h2a2 2 0 0 1 2 2v11h-4"/>
+                  <path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+                </svg>
+                <div class="floating-badge badge-top">
+                  <span class="status-indicator-dot online"></span>
+                  <span>100% Verified Response</span>
+                </div>
+                <div class="floating-badge badge-bottom">
+                  <span>📍 GPS Precision</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STATS KPI BAR -->
+        <div class="section-header">
+          <div>
+            <span class="section-eyebrow">METRICS & PULSE</span>
+            <h3 class="section-title">Citywide Resolution Pulse</h3>
+          </div>
+          <div class="section-meta">
+            <span class="status-indicator-dot online"></span>
+            <span>Refreshed live from community inputs</span>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card" data-filter-status="All">
+            <div class="stat-header">
+              <span class="stat-label">Total Submissions</span>
+              <div class="stat-icon-wrapper blue">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="totalStat">0</div>
+            <div class="stat-footer">
+              <span class="stat-trend positive">↑ 12%</span>
+              <span class="stat-subtext">Community engagement</span>
+            </div>
+          </div>
+
+          <div class="stat-card" data-filter-status="Pending">
+            <div class="stat-header">
+              <span class="stat-label">Pending Review</span>
+              <div class="stat-icon-wrapper orange">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="pendingStat">0</div>
+            <div class="stat-footer">
+              <span class="stat-subtext">Awaiting inspection triage</span>
+            </div>
+          </div>
+
+          <div class="stat-card" data-filter-status="In Progress">
+            <div class="stat-header">
+              <span class="stat-label">Work in Progress</span>
+              <div class="stat-icon-wrapper purple">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="progressStat">0</div>
+            <div class="stat-footer">
+              <span class="stat-subtext">Active field maintenance</span>
+            </div>
+          </div>
+
+          <div class="stat-card" data-filter-status="Resolved">
+            <div class="stat-header">
+              <span class="stat-label">Fully Resolved</span>
+              <div class="stat-icon-wrapper green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="resolvedStat">0</div>
+            <div class="stat-footer">
+              <span class="stat-trend positive">✓ Verified</span>
+              <span class="stat-subtext">Closed solutions</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN DASHBOARD SPLIT -->
+        <div class="dashboard-grid">
+          <!-- RECENT REPORTS PANEL -->
+          <div class="card recent-reports-card">
+            <div class="card-header">
+              <div>
+                <span class="section-eyebrow">RECENT ACTIVITY</span>
+                <h3 class="card-title">Latest Reported Problems</h3>
+              </div>
+              <button class="btn btn-ghost btn-sm" data-go="issues">
+                <span>View Full Feed</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+            <div id="recentIssues" class="recent-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- CATEGORY BREAKDOWN PANEL -->
+          <div class="card category-overview-card">
+            <div class="card-header">
+              <div>
+                <span class="section-eyebrow">DISTRIBUTION</span>
+                <h3 class="card-title">Reports by Sector</h3>
+              </div>
+              <span class="tag-counter" id="activeCategoryCount">6 Active</span>
+            </div>
+            <div id="categoryBreakdown" class="category-breakdown-list">
+              <!-- Rendered via JS -->
+            </div>
+
+            <!-- COMMUNITY IMPACT BANNER -->
+            <div class="community-callout">
+              <div class="callout-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+              </div>
+              <div class="callout-text">
+                <strong>Every Report Counts</strong>
+                <p>Public submissions directly allocate municipal repair budgets and speed up emergency response times.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================== -->
+      <!-- VIEW: EXPLORE ISSUES                           -->
+      <!-- ============================================== -->
+      <section class="view" id="issues" role="region" aria-labelledby="exploreTitle">
+        <div class="view-header">
+          <div>
+            <span class="section-eyebrow">COMMUNITY TRANSPARENCY</span>
+            <h2 class="view-title" id="exploreTitle">Public Issue Registry</h2>
+            <p class="view-subtitle">Monitor neighborhood reports, upvote pressing infrastructure needs, and track municipal updates in real-time.</p>
+          </div>
+
+          <!-- VIEW MODE SELECTOR (Cards vs Map View) -->
+          <div class="view-mode-switch">
+            <button class="mode-btn active" id="modeGridBtn" title="Grid Card View">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+              <span>Cards</span>
+            </button>
+            <button class="mode-btn" id="modeMapBtn" title="Interactive Map View">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+              <span>Map View</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SEARCH AND MULTI-FILTER BAR -->
+        <div class="filter-card">
+          <div class="search-input-wrapper">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="search" id="searchInput" placeholder="Search by title, location, landmark, or report ID (e.g. CF-1001)..." aria-label="Search reports">
+            <button class="clear-search-btn" id="clearSearchBtn" title="Clear Search" hidden>×</button>
+          </div>
+
+          <div class="filter-controls-row">
+            <div class="filter-control">
+              <label for="categoryFilter">Category</label>
+              <select id="categoryFilter">
+                <option value="All">All Categories</option>
+                <option value="Roads">🛣️ Roads & Potholes</option>
+                <option value="Garbage">🗑️ Sanitation & Waste</option>
+                <option value="Water Supply">💧 Water Supply</option>
+                <option value="Electricity">⚡ Electricity & Grid</option>
+                <option value="Drainage">🌊 Drainage & Sewage</option>
+                <option value="Streetlights">💡 Streetlights</option>
+                <option value="Other">📌 Other Public Issues</option>
+              </select>
+            </div>
+
+            <div class="filter-control">
+              <label for="statusFilter">Status</label>
+              <select id="statusFilter">
+                <option value="All">All Statuses</option>
+                <option value="Pending">Pending Review</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+            </div>
+
+            <div class="filter-control">
+              <label for="priorityFilter">Priority</label>
+              <select id="priorityFilter">
+                <option value="All">All Priorities</option>
+                <option value="High">High Priority</option>
+                <option value="Medium">Medium Priority</option>
+                <option value="Low">Low Priority</option>
+              </select>
+            </div>
+
+            <div class="filter-control">
+              <label for="sortOrder">Sort By</label>
+              <select id="sortOrder">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="upvotes">Most Upvoted</option>
+                <option value="priority">Highest Priority</option>
+              </select>
+            </div>
+
+            <button class="btn btn-secondary btn-sm" id="resetFiltersBtn" title="Reset all filters">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <span>Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- RESULTS METRIC BAR -->
+        <div class="results-bar">
+          <div class="results-count">
+            Showing <strong id="resultCount">0</strong> community reports
+          </div>
+          <div class="active-chips" id="activeFilterChips"></div>
+        </div>
+
+        <!-- CARDS VIEW CONTAINER -->
+        <div class="issue-grid" id="allIssues">
+          <!-- Rendered via JS -->
+        </div>
+
+        <!-- INTERACTIVE COMMUNITY MAP CONTAINER -->
+        <div class="community-map-wrapper" id="communityMapContainer" style="display: none;">
+          <div class="map-overlay-legend">
+            <span class="legend-title">Live Map Legend</span>
+            <div class="legend-items">
+              <span class="legend-badge pending">● Pending</span>
+              <span class="legend-badge progress">● In Progress</span>
+              <span class="legend-badge resolved">● Resolved</span>
+            </div>
+          </div>
+          <div id="exploreMap" style="height: 580px; border-radius: 12px; width: 100%;"></div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- VIEW: REPORT AN ISSUE                          -->
+      <!-- ============================================== -->
+      <section class="view" id="report" role="region" aria-labelledby="reportTitle">
+        <div class="view-header">
+          <div>
+            <span class="section-eyebrow">DIRECT CIVIC ACTION</span>
+            <h2 class="view-title" id="reportTitle">Submit a Public Issue Report</h2>
+            <p class="view-subtitle">Pinpoint civic problems accurately to notify field municipal maintenance departments promptly.</p>
+          </div>
+          <div class="form-security-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Verified Citizen Submission</span>
+          </div>
+        </div>
+
+        <div class="report-layout">
+          <!-- MAIN FORM CARD -->
+          <div class="card form-card">
+            <form id="reportForm" novalidate>
+
+              <!-- STEP 1: TITLE -->
+              <div class="form-group">
+                <label for="issueTitle" class="form-label">
+                  Issue Title <span class="required">*</span>
+                </label>
+                <div class="input-with-icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="field-icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  <input
+                    type="text"
+                    id="issueTitle"
+                    name="title"
+                    placeholder="Brief headline (e.g., Deep pothole endangering two-wheelers)"
+                    maxlength="120"
+                    required
+                  >
+                </div>
+                <div class="field-hint-row">
+                  <span class="field-hint">Keep it clear and specific so municipal staff can triage it faster.</span>
+                  <span class="char-count"><span id="titleCount">0</span>/120</span>
+                </div>
+              </div>
+
+              <!-- CATEGORY & PRIORITY ROW -->
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="issueCategory" class="form-label">
+                    Category <span class="required">*</span>
+                  </label>
+                  <select id="issueCategory" name="category" required>
+                    <option value="" disabled selected>Select municipal category</option>
+                    <option value="Roads">🛣️ Roads & Potholes</option>
+                    <option value="Garbage">🗑️ Sanitation & Waste Accumulation</option>
+                    <option value="Water Supply">💧 Drinking Water Supply & Pipe Leaks</option>
+                    <option value="Electricity">⚡ Electricity, Pole & Wire Hazards</option>
+                    <option value="Drainage">🌊 Drainage & Flooding Issues</option>
+                    <option value="Streetlights">💡 Streetlight & Night Illumination</option>
+                    <option value="Other">📌 Other Civic Infrastructure</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="issuePriority" class="form-label">
+                    Estimated Urgency / Priority <span class="required">*</span>
+                  </label>
+                  <select id="issuePriority" name="priority" required>
+                    <option value="Medium" selected>Medium (Impacting neighborhood daily)</option>
+                    <option value="High">High (Immediate hazard or safety risk)</option>
+                    <option value="Low">Low (General cosmetic or minor maintenance)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- STEP 2: LOCATION & INTERACTIVE MAP -->
+              <div class="form-group location-group">
+                <label for="issueLocation" class="form-label">
+                  Physical Location or Address <span class="required">*</span>
+                </label>
+                <div class="input-with-icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="field-icon"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <input
+                    type="text"
+                    id="issueLocation"
+                    name="location"
+                    placeholder="Enter street, crossroad, landmark or click on the map below"
+                    maxlength="160"
+                    required
+                  >
+                </div>
+
+                <!-- ADDRESS SEARCH & GPS TOOLBAR -->
+                <div class="map-action-bar">
+                  <div class="address-search-box">
+                    <input type="text" id="mapSearchInput" placeholder="Search address or area to jump map...">
+                    <button type="button" class="btn btn-secondary btn-xs" id="mapSearchBtn">
+                      <span>Search</span>
+                    </button>
+                  </div>
+
+                  <button type="button" class="btn btn-outline btn-xs" id="useMyLocation">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7z"/></svg>
+                    <span>Use My GPS</span>
+                  </button>
+                </div>
+
+                <!-- MAP CANVAS -->
+                <div class="map-container-box">
+                  <div id="issueMap" aria-label="Interactive map for pinpointing issue location"></div>
+                  <div class="map-helper-badge" id="locationStatus">
+                    Click anywhere on the map or drag the pin to set the exact coordinates
+                  </div>
+                </div>
+
+                <!-- COORDINATES READOUT -->
+                <div class="coordinates-bar">
+                  <div class="coord-pill">
+                    <span class="coord-label">Latitude:</span>
+                    <strong id="latitudeText">Not selected</strong>
+                  </div>
+                  <div class="coord-pill">
+                    <span class="coord-label">Longitude:</span>
+                    <strong id="longitudeText">Not selected</strong>
+                  </div>
+                  <button type="button" class="clear-coord-btn" id="clearCoordsBtn" title="Clear map selection">Clear Pin</button>
+                </div>
+
+                <input type="hidden" id="issueLatitude" name="latitude">
+                <input type="hidden" id="issueLongitude" name="longitude">
+              </div>
+
+              <!-- STEP 3: DETAILED DESCRIPTION -->
+              <div class="form-group">
+                <label for="issueDescription" class="form-label">
+                  Detailed Description <span class="required">*</span>
+                </label>
+                <textarea
+                  id="issueDescription"
+                  name="description"
+                  rows="4"
+                  maxlength="1000"
+                  placeholder="Explain the problem thoroughly: how long has it persisted? Does it pose danger to pedestrians, elderly, or vehicles? Any reference points?"
+                  required
+                ></textarea>
+                <div class="field-hint-row">
+                  <span class="field-hint">Minimum 15 characters. Clear details help authorities dispatch the right crew.</span>
+                  <span class="char-count"><span id="descCount">0</span>/1000</span>
+                </div>
+              </div>
+
+              <!-- STEP 4: PHOTO ATTACHMENT WITH DRAG-AND-DROP & COMPRESSION -->
+              <div class="form-group">
+                <label class="form-label">Attach Supporting Photograph (Optional but Recommended)</label>
+                <div class="dropzone" id="dropZone">
+                  <input type="file" id="issueImage" accept="image/png,image/jpeg,image/webp" hidden>
+                  <div class="dropzone-inner" id="dropzoneContent">
+                    <div class="dropzone-icon">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                    </div>
+                    <div class="dropzone-text">
+                      <strong>Click to upload or drag & drop a photo</strong>
+                      <span>PNG, JPG, or WEBP · Automatic browser optimization</span>
+                    </div>
+                  </div>
+
+                  <!-- IMAGE PREVIEW CONTAINER -->
+                  <div class="preview-box" id="previewBox" style="display: none;">
+                    <img id="imagePreview" src="" alt="Issue evidence preview">
+                    <div class="preview-details">
+                      <span class="preview-name" id="fileName">image.jpg</span>
+                      <span class="preview-size" id="fileSize">0 KB</span>
+                      <button type="button" class="btn-remove-photo" id="removePhotoBtn" title="Remove photo">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                        <span>Remove</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- STEP 5: ACCURACY CONFIRMATION -->
+              <div class="form-group checkbox-wrapper">
+                <label class="checkbox-container">
+                  <input type="checkbox" id="confirmDetails" required>
+                  <span class="checkmark"></span>
+                  <span class="checkbox-label">
+                    I confirm this report is truthful and concerns public civic infrastructure. I understand misuse may result in report rejection.
+                  </span>
+                </label>
+              </div>
+
+              <!-- ACTION BUTTONS -->
+              <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="resetForm">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                  <span>Clear Form</span>
+                </button>
+                <button type="submit" class="btn btn-primary" id="submitReportBtn">
+                  <span>Submit Public Report</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- ASIDE WORKFLOW HELPER -->
+          <aside class="report-aside">
+            <div class="card workflow-card">
+              <div class="aside-title-row">
+                <div class="aside-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                </div>
+                <h4>How Resolution Works</h4>
+              </div>
+
+              <div class="workflow-steps">
+                <div class="workflow-step">
+                  <div class="step-num">1</div>
+                  <div class="step-text">
+                    <strong>Citizen Submission</strong>
+                    <p>Report is verified, assigned a tracking ID, and pinned to the public registry.</p>
+                  </div>
+                </div>
+
+                <div class="workflow-step">
+                  <div class="step-num">2</div>
+                  <div class="step-text">
+                    <strong>Department Triage</strong>
+                    <p>The relevant municipal department (Roads, Water, Waste) receives and logs the ticket.</p>
+                  </div>
+                </div>
+
+                <div class="workflow-step">
+                  <div class="step-num">3</div>
+                  <div class="step-text">
+                    <strong>Field Action & Repair</strong>
+                    <p>Maintenance crews are dispatched. Status updates to <em>In Progress</em>.</p>
+                  </div>
+                </div>
+
+                <div class="workflow-step">
+                  <div class="step-num">4</div>
+                  <div class="step-text">
+                    <strong>Inspection & Closure</strong>
+                    <p>Work is inspected, photos verified, and marked <em>Resolved</em> for citizen confirmation.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- EMERGENCY NOTICE -->
+            <div class="card warning-card">
+              <div class="warning-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+                <strong>Emergency Helpline Notice</strong>
+              </div>
+              <p>For live fire hazards, active electrical explosions, severe gas leaks, or medical emergencies, do not wait for online ticketing. Call emergency services immediately (911 / 112).</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- VIEW: ANALYTICS & INSIGHTS                     -->
+      <!-- ============================================== -->
+      <section class="view" id="analytics" role="region" aria-labelledby="analyticsTitle">
+        <div class="view-header">
+          <div>
+            <span class="section-eyebrow">GOVERNANCE & TRANSPARENCY</span>
+            <h2 class="view-title" id="analyticsTitle">Community Impact Analytics</h2>
+            <p class="view-subtitle">Data-driven performance metrics on public infrastructure upkeep, department resolution velocity, and civic accountability.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="exportAnalyticsBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            <span>Download Summary</span>
+          </button>
+        </div>
+
+        <!-- ANALYTICS TOP STATS -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total Handled</span>
+            <div class="stat-value" id="analyticsTotal">0</div>
+            <div class="stat-footer"><span class="stat-subtext">All time registered</span></div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Resolution Efficiency</span>
+            <div class="stat-value" id="resolutionRate">0%</div>
+            <div class="stat-footer"><span class="stat-trend positive">↑ Higher than 2025</span></div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Critical Issues Triaged</span>
+            <div class="stat-value" id="highPriority">0</div>
+            <div class="stat-footer"><span class="stat-subtext">High urgency tickets</span></div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Public Endorsements</span>
+            <div class="stat-value" id="totalUpvotes">0</div>
+            <div class="stat-footer"><span class="stat-subtext">Citizen community upvotes</span></div>
+          </div>
+        </div>
+
+        <!-- CHARTS GRID -->
+        <div class="analytics-grid">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <span class="section-eyebrow">VOLUME BY SECTOR</span>
+                <h3 class="card-title">Category Distribution</h3>
+              </div>
+            </div>
+            <div id="analyticsCategories" class="analytics-chart-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <span class="section-eyebrow">LIFECYCLE PIPELINE</span>
+                <h3 class="card-title">Status Breakdown</h3>
+              </div>
+            </div>
+            <div id="statusChart" class="analytics-chart-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- PRIORITY MATRIX -->
+        <div class="card priority-matrix-card">
+          <div class="card-header">
+            <div>
+              <span class="section-eyebrow">SLA BENCHMARKS</span>
+              <h3 class="card-title">Priority Resolution Matrix</h3>
+            </div>
+          </div>
+          <div class="priority-benchmark-grid" id="priorityBenchmarkGrid">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- VIEW: ADMIN LOGIN (RESTRICTED ACCESS)          -->
+      <!-- ============================================== -->
+      <section class="view" id="adminLogin" role="region" aria-labelledby="adminLoginTitle">
+        <div class="admin-login-wrapper">
+          <div class="card admin-login-card">
+            
+            <div class="login-seal-wrapper">
+              <div class="login-seal">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <rect width="8" height="5" x="8" y="11" rx="1"/>
+                  <path d="M10 11V9a2 2 0 1 1 4 0v2"/>
+                </svg>
+              </div>
+              <span class="security-badge-pill">● SECURE MUNICIPAL ACCESS</span>
+            </div>
+
+            <div class="login-header-block">
+              <h2 class="login-title" id="adminLoginTitle">Staff Administration Portal</h2>
+              <p class="login-subtitle">Sign in to manage city tickets, dispatch municipal repair crews, and update public resolution milestones.</p>
+            </div>
+
+            <!-- DEMO CREDENTIALS HELPER -->
+            <div class="demo-credential-box">
+              <div class="demo-cred-header">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                <span>Demonstration Access Credentials</span>
+              </div>
+              <div class="demo-cred-content">
+                <div><strong>Email:</strong> <code>admin@civicfix.gov</code></div>
+                <div><strong>Passcode:</strong> <code>admin123</code></div>
+              </div>
+              <button type="button" class="btn-autofill" id="autoFillCredsBtn">
+                ⚡ 1-Click Auto Fill
+              </button>
+            </div>
+
+            <!-- LOGIN ERROR ALERT BANNER -->
+            <div class="login-alert-banner" id="loginAlertBanner" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+              <span id="loginAlertText">Invalid staff credentials. Please check your email or passcode.</span>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="adminLoginForm" novalidate>
+              <div class="form-group">
+                <label for="adminEmail" class="form-label">Official Work Email <span class="required">*</span></label>
+                <div class="input-with-icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="field-icon"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                  <input
+                    type="email"
+                    id="adminEmail"
+                    placeholder="e.g. admin@civicfix.gov"
+                    autocomplete="username"
+                    required
+                  >
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="label-with-action">
+                  <label for="adminPassword" class="form-label">Access Passcode <span class="required">*</span></label>
+                  <button type="button" class="text-link-sm" id="forgotPassBtn">Forgot?</button>
+                </div>
+                <div class="input-with-icon password-toggle-box">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="field-icon"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <input
+                    type="password"
+                    id="adminPassword"
+                    placeholder="Enter security passcode"
+                    autocomplete="current-password"
+                    required
+                  >
+                  <button type="button" class="btn-toggle-eye" id="togglePasswordBtn" title="Show or hide password" aria-label="Toggle password visibility">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="eyeIcon"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="login-form-options">
+                <label class="checkbox-container">
+                  <input type="checkbox" id="rememberAdmin" checked>
+                  <span class="checkmark"></span>
+                  <span class="checkbox-label">Keep session authenticated on this device</span>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block" id="adminLoginSubmitBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
+                <span>Sign In to Admin Console</span>
+              </button>
+            </form>
+
+            <div class="login-footer-nav">
+              <button type="button" class="btn-back-citizen" data-go="dashboard">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                <span>Return to Citizen Portal</span>
+              </button>
+            </div>
+
+          </div>
+
+          <div class="login-compliance-note">
+            <span>🔒 Protected by Municipal Security Policy Directive 2026-B. All administrative access attempts are monitored and recorded.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- VIEW: ADMIN PANEL                              -->
+      <!-- ============================================== -->
+      <section class="view" id="admin" role="region" aria-labelledby="adminTitle">
+        <div class="view-header">
+          <div>
+            <div class="admin-session-badge">
+              <span class="pulse-dot"></span>
+              <span>STAFF SESSION ACTIVE: OFFICER ADMIN</span>
+            </div>
+            <h2 class="view-title" id="adminTitle">Issue Administration & Triage</h2>
+            <p class="view-subtitle">Review resident reports, update ticket workflow states, add official resolution notes, and export public audit data.</p>
+          </div>
+          <div class="admin-header-actions">
+            <button class="btn btn-secondary btn-sm" id="resetDemoBtn" title="Restore standard sample complaints">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <span>Reset Demo Data</span>
+            </button>
+            <button class="btn btn-primary btn-sm" id="exportBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              <span>Export CSV</span>
+            </button>
+            <button class="btn btn-danger btn-sm" id="adminLogoutBtn" title="Sign out of administrative session">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ADMIN STATUS COUNTERS -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total Assigned</span>
+            <div class="stat-value" id="adminTotal">0</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Pending Action</span>
+            <div class="stat-value text-orange" id="adminPending">0</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Crew In Field</span>
+            <div class="stat-value text-purple" id="adminProgress">0</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Closed & Verified</span>
+            <div class="stat-value text-green" id="adminResolved">0</div>
+          </div>
+        </div>
+
+        <!-- ADMIN DATA TABLE -->
+        <div class="card table-card">
+          <div class="card-header table-header-flex">
+            <div>
+              <h3 class="card-title">Community Issue Ledger</h3>
+              <p class="card-subtitle">Change status or update official response in real-time.</p>
+            </div>
+            <div class="admin-table-filters">
+              <input type="search" id="adminSearchInput" placeholder="Filter complaints by ID or keywords..." class="admin-search-box">
+              <select id="adminStatusFilter" class="admin-select-sm">
+                <option value="All">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table" id="adminDataTable">
+              <thead>
+                <tr>
+                  <th>TICKET / TITLE</th>
+                  <th>CATEGORY</th>
+                  <th>PRIORITY</th>
+                  <th>LOCATION</th>
+                  <th>STATUS</th>
+                  <th>OFFICIAL NOTE</th>
+                  <th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="adminTable">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- SITE FOOTER -->
+    <footer class="footer">
+      <div class="footer-left">
+        <div class="footer-brand">
+          <span class="footer-dot"></span>
+          <strong>CivicFix Municipal Platform</strong>
+        </div>
+        <span>© 2026 CivicFix Foundation. Open Citizen Governance & Infrastructure Transparency.</span>
+      </div>
+      <div class="footer-right">
+        <a href="#dashboard" class="footer-link" data-go="dashboard">Overview</a>
+        <a href="#issues" class="footer-link" data-go="issues">Issues Feed</a>
+        <a href="#report" class="footer-link" data-go="report">File Report</a>
+        <a href="#admin" class="footer-link" data-go="admin">Management</a>
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<!-- ============================================== -->
+<!-- MODAL: ISSUE DETAILS VIEW                      -->
+<!-- ============================================== -->
+<div class="modal-overlay" id="issueModal" role="dialog" aria-modal="true" aria-labelledby="modalIssueTitle">
+  <div class="modal-card">
+    <button class="modal-close-btn" id="modalClose" aria-label="Close modal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div id="modalContent" class="modal-body-wrapper">
+      <!-- Injected dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- MODAL: DELETE CONFIRMATION                     -->
+<!-- ============================================== -->
+<div class="modal-overlay" id="deleteConfirmModal" role="dialog" aria-modal="true">
+  <div class="modal-card modal-confirm">
+    <div class="confirm-icon-box">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+    </div>
+    <h3 class="confirm-title">Delete Complaint Report</h3>
+    <p class="confirm-text" id="deleteModalMessage">Are you sure you want to permanently delete this report? This action cannot be undone.</p>
+    <div class="confirm-actions">
+      <button class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">Delete Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- MODAL: CITIZEN / STAFF PROFILE & CREDENTIALS   -->
+<!-- ============================================== -->
+<div class="modal-overlay" id="profileModal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+  <div class="modal-card modal-profile-card">
+    <button class="modal-close-btn" id="profileModalClose" aria-label="Close profile modal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div id="profileModalBody" class="modal-body-wrapper">
+      <!-- Populated dynamically by openProfileModal() -->
+    </div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION CONTAINER -->
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+<!-- Leaflet JS Library -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- Application Script -->
+<script src="script.js"></script>
+
+</body>
+</html>
